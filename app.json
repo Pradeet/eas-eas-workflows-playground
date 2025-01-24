@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f2378db9-a001-4b06-87b0-b4f85ee84a30"
+      }
+    },
+    "owner": "pradeet"
   }
 }
