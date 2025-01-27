@@ -42,10 +42,10 @@ jobs:
         if: ${{ github.event.inputs.android == 'true' }}
         run: |
           echo "Publishing Android app to the production channel..."
-          eas update --channel production --platform android
+          eas update --channel production --platform android --message "Automated production update for Android"
 
       - name: Publish for iOS
         if: ${{ github.event.inputs.ios == 'true' }}
         run: |
           echo "Publishing iOS app to the production channel..."
-          eas update --channel production --platform ios
+          eas update --channel production --platform ios --message "Automated production update for iOS"
