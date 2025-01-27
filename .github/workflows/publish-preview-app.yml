@@ -1,0 +1,59 @@
+name: Publish Preview App
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Select the channel to publish'
+        required: true
+        type: choice
+        default: 'internal'
+        options:
+          - internal
+          - preview
+      android:
+        description: 'Publish for Android'
+        required: true
+        default: true
+        type: boolean
+      ios:
+        description: 'Publish for iOS'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  publish-preview-app:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for EXPO_TOKEN
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish for Android
+        if: ${{ github.event.inputs.android == 'true' }}
+        run: |
+          echo "Publishing Android app to the ${{ github.event.inputs.channel }} channel..."
+          eas update --channel ${{ github.event.inputs.channel }} --platform android
+
+      - name: Publish for iOS
+        if: ${{ github.event.inputs.ios == 'true' }}
+        run: |
+          echo "Publishing iOS app to the ${{ github.event.inputs.channel }} channel..."
+          eas update --channel ${{ github.event.inputs.channel }} --platform ios
